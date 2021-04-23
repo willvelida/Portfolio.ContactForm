@@ -15,11 +15,21 @@ namespace Portfolio.ContactForm.Services
         public SendGridService(IOptions<FunctionOptions> options)
         {
             _settings = options.Value;
-            _sendGridClient = new SendGridClient(_settings.SendGridAPIKey) ?? throw new ArgumentNullException($"Missing value for parameter: {nameof(_settings.SendGridAPIKey)}");
+        }
+
+        public SendGridClient Initialize(string apiKey)
+        {
+            if (string.IsNullOrEmpty(apiKey))           
+                throw new ArgumentNullException($"Missing value for parameter: {nameof(_settings.SendGridAPIKey)}");
+
+            _sendGridClient = new SendGridClient(apiKey);
+
+            return _sendGridClient;
         }
 
         public async Task<Response> SendEmail(SendGridMessage sendGridMessage)
         {
+            _sendGridClient = Initialize(_settings.SendGridAPIKey);
             return await _sendGridClient.SendEmailAsync(sendGridMessage);
         }
     }
