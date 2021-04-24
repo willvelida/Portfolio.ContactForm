@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -99,7 +100,7 @@ namespace Portfolio.ContactForm.UnitTests.FunctionTests
         }
 
         [Fact]
-        public async Task Throw503WhenSendEmailFails()
+        public async Task Throw500WhenSendEmailFails()
         {
             // Arrange
             var emailRequest = new EmailMessageRequest();
@@ -111,12 +112,10 @@ namespace Portfolio.ContactForm.UnitTests.FunctionTests
             _mockSendGridService.Setup(s => s.SendEmail(It.IsAny<SendGridMessage>())).ThrowsAsync(It.IsAny<Exception>());
 
             // Act
-            var response = await _func.Run(_mockHttpRequest.Object);
+            Func<Task> responseAction = async () => await _func.Run(_mockHttpRequest.Object);
 
             // Assert
-            Assert.Equal(typeof(StatusCodeResult), response.GetType());
-            var responseAsStatusCode = (StatusCodeResult)response;
-            Assert.Equal(500, responseAsStatusCode.StatusCode);
+            responseAction.Should().ThrowAsync<Exception>();
         }
     }
 }

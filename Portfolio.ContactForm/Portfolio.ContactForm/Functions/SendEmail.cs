@@ -56,6 +56,7 @@ namespace Portfolio.ContactForm.Functions
             {
                 _logger.LogError($"Exception thrown in {nameof(SendEmail)}: {ex}");
                 result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                throw;
             }
 
             return result;
