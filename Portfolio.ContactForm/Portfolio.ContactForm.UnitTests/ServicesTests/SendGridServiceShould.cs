@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Moq;
-using Portfolio.ContactForm.Models.Settings;
 using Portfolio.ContactForm.Services;
 using System;
 using Xunit;
@@ -10,19 +9,14 @@ namespace Portfolio.ContactForm.UnitTests.ServicesTests
 {
     public class SendGridServiceShould
     {
-        private Mock<IOptions<FunctionOptions>> _mockOptions;
+        private Mock<IConfiguration> _mockConfiguration;
 
         private SendGridService _sut;
 
         public SendGridServiceShould()
         {
-            _mockOptions = new Mock<IOptions<FunctionOptions>>();
-            FunctionOptions functionOptions = new FunctionOptions
-            {
-
-            };
-            _mockOptions.Setup(settings => settings.Value).Returns(functionOptions);
-            _sut = new SendGridService(_mockOptions.Object);
+            _mockConfiguration = new Mock<IConfiguration>();
+            _sut = new SendGridService(_mockConfiguration.Object);
         }
 
         [Fact]
@@ -32,7 +26,7 @@ namespace Portfolio.ContactForm.UnitTests.ServicesTests
             Action initializeAction = () => _sut.Initialize(null);
 
             // Assert
-            initializeAction.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'Missing value for parameter: SendGridAPIKey')");
+            initializeAction.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'Missing value for parameter: 'SendGridAPIKey'')");
         }
     }
 }

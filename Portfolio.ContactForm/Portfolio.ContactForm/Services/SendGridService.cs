@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Portfolio.ContactForm.Models.Settings;
+﻿using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -10,17 +9,17 @@ namespace Portfolio.ContactForm.Services
     public class SendGridService : ISendGridService
     {
         private SendGridClient _sendGridClient;
-        private readonly FunctionOptions _settings;
+        private readonly IConfiguration _configuration;
 
-        public SendGridService(IOptions<FunctionOptions> options)
+        public SendGridService(IConfiguration configuration)
         {
-            _settings = options.Value;
+            _configuration = configuration;
         }
 
         public SendGridClient Initialize(string apiKey)
         {
             if (string.IsNullOrEmpty(apiKey))
-                throw new ArgumentNullException($"Missing value for parameter: {nameof(_settings.SendGridAPIKey)}");
+                throw new ArgumentNullException($"Missing value for parameter: 'SendGridAPIKey'");
 
             _sendGridClient = new SendGridClient(apiKey);
 
@@ -29,7 +28,7 @@ namespace Portfolio.ContactForm.Services
 
         public async Task<Response> SendEmail(SendGridMessage sendGridMessage)
         {
-            _sendGridClient = Initialize(_settings.SendGridAPIKey);
+            _sendGridClient = Initialize(_configuration["SendGridAPIKey"]);
             return await _sendGridClient.SendEmailAsync(sendGridMessage);
         }
     }

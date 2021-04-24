@@ -83,7 +83,7 @@ stages:
                     appType: functionApp
                     WebAppName: $(functionAppName)                   
                     package: '$(Pipeline.Workspace)/drop/Portfolio.ContactForm.zip'
-                    appSettings: '-FUNCTIONS_WORKER_RUNTIME "dotnet" -FUNCTIONS_EXTENSION_VERSION "~3" -FunctionsOptions:RecipientEmail "willvelida@hotmail.co.uk" -FunctionsOptions:RecipientName "Will Velida" -FunctionsOptions:SendGridAPIKey "$(sendgridapikey)" -APPINSIGHTS_INSTRUMENTATIONKEY "2fc597df-fc6b-4b20-ac9c-ee7240b70704"'
+                    appSettings: '-FUNCTIONS_WORKER_RUNTIME "dotnet" -FUNCTIONS_EXTENSION_VERSION "~3" -RecipientEmail "willvelida@hotmail.co.uk" -RecipientName "Will Velida" -SendGridAPIKey "$(sendgridapikey)" -APPINSIGHTS_INSTRUMENTATIONKEY "2fc597df-fc6b-4b20-ac9c-ee7240b70704"'
                     enableCustomDeployment: true
                     RemoveAdditionalFilesFlag: true 
 

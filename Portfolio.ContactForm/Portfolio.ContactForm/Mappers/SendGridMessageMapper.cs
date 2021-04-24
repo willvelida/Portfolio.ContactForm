@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Portfolio.ContactForm.Models;
-using Portfolio.ContactForm.Models.Settings;
 using SendGrid.Helpers.Mail;
 using System;
 
@@ -10,25 +9,25 @@ namespace Portfolio.ContactForm.Mappers
 {
     public class SendGridMessageMapper : ISendGridMessageMapper
     {
-        private readonly FunctionOptions _settings;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<SendGridMessageMapper> _logger;
 
         public SendGridMessageMapper(
-            IOptions<FunctionOptions> options,
+            IConfiguration configuration,
             ILogger<SendGridMessageMapper> logger)
         {
-            _settings = options.Value;
+            _configuration = configuration;
             _logger = logger;
         }
 
         public SendGridMessage MapRequestToMessage(string requestBody)
         {
-            _logger.LogInformation($"RecipientEmail: {_settings.RecipientEmail}");
-            _logger.LogInformation($"RecipientName: {_settings.RecipientName}");
-            if (string.IsNullOrEmpty(_settings.RecipientEmail))
-                throw new ArgumentNullException($"Missing value for parameter: {nameof(_settings.RecipientEmail)}");
-            if (string.IsNullOrEmpty(_settings.RecipientName))
-                throw new ArgumentNullException($"Missing value for parameter: {nameof(_settings.RecipientName)}");
+            _logger.LogInformation($"RecipientEmail: {_configuration["RecipientEmail"]}");
+            _logger.LogInformation($"RecipientName: {_configuration["RecipientName"]}");
+            if (string.IsNullOrEmpty(_configuration["RecipientEmail"]))
+                throw new ArgumentNullException($"Missing value for parameter: 'RecipientEmail'");
+            if (string.IsNullOrEmpty(_configuration["RecipientName"]))
+                throw new ArgumentNullException($"Missing value for parameter: 'RecipientName'");
 
             var jsonInput = JsonConvert.DeserializeObject<EmailMessageRequest>(requestBody);
 
@@ -40,7 +39,7 @@ namespace Portfolio.ContactForm.Mappers
                 HtmlContent = jsonInput.EmailBody
             };
 
-            message.AddTo(_settings.RecipientEmail, _settings.RecipientName);
+            message.AddTo(_configuration["RecipientEmail"], _configuration["RecipientName"]);
 
             return message;
         }
