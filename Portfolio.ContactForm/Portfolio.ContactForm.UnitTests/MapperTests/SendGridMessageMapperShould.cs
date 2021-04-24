@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
@@ -14,12 +15,14 @@ namespace Portfolio.ContactForm.UnitTests.MapperTests
     public class SendGridMessageMapperShould
     {
         private Mock<IOptions<FunctionOptions>> _mockOptions;
+        private Mock<ILogger<SendGridMessageMapper>> _mockLogger;
 
         private SendGridMessageMapper _func;
 
         public SendGridMessageMapperShould()
         {
             _mockOptions = new Mock<IOptions<FunctionOptions>>();
+            _mockLogger = new Mock<ILogger<SendGridMessageMapper>>();
         }
 
         [Fact]
@@ -35,7 +38,7 @@ namespace Portfolio.ContactForm.UnitTests.MapperTests
             EmailMessageRequest emailMessageRequest = new EmailMessageRequest();
             string emailMessageBody = JsonConvert.SerializeObject(emailMessageRequest);
 
-            _func = new SendGridMessageMapper(_mockOptions.Object);
+            _func = new SendGridMessageMapper(_mockOptions.Object, _mockLogger.Object);
 
             // Act
             Action mapRequestToMessageAction = () => _func.MapRequestToMessage(emailMessageBody);
@@ -57,7 +60,7 @@ namespace Portfolio.ContactForm.UnitTests.MapperTests
             EmailMessageRequest emailMessageRequest = new EmailMessageRequest();
             string emailMessageBody = JsonConvert.SerializeObject(emailMessageRequest);
 
-            _func = new SendGridMessageMapper(_mockOptions.Object);
+            _func = new SendGridMessageMapper(_mockOptions.Object, _mockLogger.Object);
 
             // Act
             Action mapRequestToMessageAction = () => _func.MapRequestToMessage(emailMessageBody);
@@ -87,7 +90,7 @@ namespace Portfolio.ContactForm.UnitTests.MapperTests
             };
             string emailMessageBody = JsonConvert.SerializeObject(emailMessageRequest);
 
-            _func = new SendGridMessageMapper(_mockOptions.Object);
+            _func = new SendGridMessageMapper(_mockOptions.Object, _mockLogger.Object);
 
             // Act
             var response = _func.MapRequestToMessage(emailMessageBody);
