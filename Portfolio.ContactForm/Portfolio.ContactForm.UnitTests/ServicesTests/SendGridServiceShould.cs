@@ -3,10 +3,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Portfolio.ContactForm.Models.Settings;
 using Portfolio.ContactForm.Services;
-using SendGrid;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Portfolio.ContactForm.UnitTests.ServicesTests

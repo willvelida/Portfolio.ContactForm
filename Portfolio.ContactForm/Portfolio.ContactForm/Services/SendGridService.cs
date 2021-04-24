@@ -19,7 +19,7 @@ namespace Portfolio.ContactForm.Services
 
         public SendGridClient Initialize(string apiKey)
         {
-            if (string.IsNullOrEmpty(apiKey))           
+            if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException($"Missing value for parameter: {nameof(_settings.SendGridAPIKey)}");
 
             _sendGridClient = new SendGridClient(apiKey);

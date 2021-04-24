@@ -7,8 +7,6 @@ using Portfolio.ContactForm.Models;
 using Portfolio.ContactForm.Models.Settings;
 using SendGrid.Helpers.Mail;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Portfolio.ContactForm.UnitTests.MapperTests
@@ -21,7 +19,7 @@ namespace Portfolio.ContactForm.UnitTests.MapperTests
 
         public SendGridMessageMapperShould()
         {
-            _mockOptions = new Mock<IOptions<FunctionOptions>>();           
+            _mockOptions = new Mock<IOptions<FunctionOptions>>();
         }
 
         [Fact]
@@ -69,7 +67,7 @@ namespace Portfolio.ContactForm.UnitTests.MapperTests
         }
 
         [Fact]
-        public void SendMessageSuccessfully()
+        public void MapMessageRequestToSendGridMessageSuccessfully()
         {
             // Arrange
             FunctionOptions functionOptions = new FunctionOptions
