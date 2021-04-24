@@ -1,0 +1,54 @@
+trigger:
+  - main
+
+variables:
+  buildConfiguration: 'Release'
+  vmImageName: 'vs2017-win2016'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/Portfolio.ContactForm'
+  functionAppName: 'favelidapscontactform'
+  azureSubscription: 'e86d34ea-25ef-4288-8ffb-5baaea87a61b'
+
+stages:
+  - stage: Build
+    displayName: Build Stage
+
+    jobs:
+      - job: Build
+        displayName: Build Project
+        pool:
+          vmImage: $(vmImageName)
+        
+        steps:
+          - task: DotNetCoreCLI@2
+            displayName: Restore Project
+            inputs:
+              command: 'restore'
+              projects: '**/*.csproj'
+            
+          - task: DotNetCoreCLI@2
+            displayName: Build Project
+            inputs:
+              command: 'build'
+              projects: '**/*.csproj'
+              arguments: --configuration $(buildConfiguration)
+
+          - task: DotNetCoreCLI@2
+            displayName: Run Unit Tests
+            inputs:
+              command: 'test'
+              projects: '**/*UnitTests/*.csproj'
+
+          - task: DotNetCoreCLI@2
+            displayName: Publish Project
+            inputs:
+              command: 'publish'
+              publishWebProjects: false
+              projects: '**/*.csproj'
+              arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
+              zipAfterPublish: True
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact'
+            inputs:
+              PathtoPublish: '$(build.artifactstagingdirectory)'
+
