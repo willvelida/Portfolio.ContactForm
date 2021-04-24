@@ -51,4 +51,40 @@ stages:
             displayName: 'Publish Artifact'
             inputs:
               PathtoPublish: '$(build.artifactstagingdirectory)'
+  
+  - stage: Deploy
+    displayName: 'Deploy Portfolio.ContactForm'
+    dependsOn: Build
+    condition: succeeded()
+
+    jobs:
+      - deployment: Deploy
+        displayName: Deploy Portfolio.ContactForm
+        environment: Production
+        pool:
+          vmImage: $(vmImageName)
+        
+        strategy:
+          runOnce:
+            deploy:
+              
+              steps:
+                - task: AzureKeyVault@1
+                  inputs:
+                    azureSubscription: '$(azureSubscription)'
+                    KeyVaultName: 'willvelidakeyvault'
+                    secretsFilter: '*'
+                    runAsPreJob: false
+
+                - task: AzureRmWebAppDeployment@4
+                  displayName: 'Deploy Azure Function'
+                  inputs:
+                    azureSubscription: '$(azureSubscription)'
+                    appType: functionApp
+                    WebAppName: $(functionAppName)                   
+                    package: '$(Pipeline.Workspace)/drop/Portfolio.ContactForm.zip'
+                    appSettings: '-FUNCTIONS_WORKER_RUNTIME "dotnet" -FUNCTIONS_EXTENSION_VERSION "~3" -FunctionsOptions:ExceptionRecipientEmail "willvelida@hotmail.co.uk" -FunctionsOptions:ExceptionRecipientName "Will Velida" -FunctionsOptions:SendGridAPIKey "$(sendgridapikey)" -APPINSIGHTS_INSTRUMENTATIONKEY "2fc597df-fc6b-4b20-ac9c-ee7240b70704"'
+                    enableCustomDeployment: true
+                    RemoveAdditionalFilesFlag: true 
+
 
