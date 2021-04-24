@@ -5,7 +5,7 @@ variables:
   buildConfiguration: 'Release'
   vmImageName: 'vs2017-win2016'
   workingDirectory: '$(System.DefaultWorkingDirectory)/Portfolio.ContactForm'
-  functionAppName: 'favelidapscontactform'
+  functionAppName: 'favelidapscontact'
   azureSubscription: 'e86d34ea-25ef-4288-8ffb-5baaea87a61b'
 
 stages:
